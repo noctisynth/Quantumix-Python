@@ -95,8 +95,8 @@ def new_todo(request: WSGIRequest):
     parent = Todo.objects.filter(id=tid).first()
 
     Todo.objects.create(
-        project=project,
-        user=user,
+        pid=project,
+        uid=user,
         name=name,
         permission=permission,
         priority=priority,
@@ -145,8 +145,8 @@ def new_task(request: WSGIRequest):
     parent = Task.objects.get(id=tid)
 
     Task.objects.create(
-        project=project,
-        user=user,
+        pid=project,
+        uid=user,
         name=name,
         permission=permission,
         priority=priority,
