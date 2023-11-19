@@ -140,9 +140,7 @@ def new_task(request: WSGIRequest):
     start_time = request.POST.get("start_time")
     duration = request.POST.get("duration")
     tid = request.POST.get("parent")
-    if Task.objects.filter(id=tid).count() == 0:
-        return HttpResponseNotFound("父进程不存在!")
-    parent = Task.objects.get(id=tid)
+    parent = Task.objects.filter(id=tid).first()
 
     Task.objects.create(
         pid=project,
