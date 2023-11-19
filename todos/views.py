@@ -120,9 +120,9 @@ def new_todo(request: WSGIRequest):
         priority=priority,
         content=content,
         desc=desc,
-        start_time=startline,
-        duration=endline,
-        parent=parent,
+        startline=startline,
+        endline=endline,
+        tid=parent,
         is_checked=False,
     )
     return HttpResponse("新任务创建成功!")
