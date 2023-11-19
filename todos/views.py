@@ -33,9 +33,7 @@ def new_project(request: WSGIRequest):
         return HttpResponseNotAllowed("POST")
 
     username = request.POST.get("user")
-    if username and User.objects.filter(username=username).count() == 0:
-        return HttpResponseNotFound("目标用户不存在!")
-    user = User.objects.get(username=username)
+    user = User.objects.filter(username=username).first()
 
     name = request.POST.get("name")
 
@@ -70,25 +68,21 @@ def new_todo(request: WSGIRequest):
         return HttpResponseNotAllowed("POST")
 
     pid = request.POST.get("project")
-    if pid and Project.objects.filter(id=pid).count() == 0:
-        return HttpResponseNotFound("目标项目不存在!")
-    project = Project.objects.get(id=pid)
+    project = Project.objects.filter(id=pid).first()
     # else:
     #     project = Project.objects.get(id=pid)
     #     if project.is_checked:
     #         return HttpResponseNotModified("目标项目已经结项!")
 
     username = request.POST.get("user")
-    if username and User.objects.filter(username=username).count() == 0:
-        return HttpResponseNotFound("目标用户不存在!")
-    user = User.objects.get(username=username)
+    user = User.objects.filter(username=username).first()
 
     name = request.POST.get("name")
 
     level = request.POST.get("level")
     if Permission.objects.filter(level=level).count() == 0:
         return HttpResponseNotFound("权限不存在!")
-    permission = Permission.objects.get(level=level)
+    permission = Permission.objects.filter(level=level).first()
     # elif Permission.objects.get(level=level) > workas.permission.level:
     #     return HttpResponseForbidden("权限不足, 拒绝访问.")
 
@@ -98,9 +92,7 @@ def new_todo(request: WSGIRequest):
     startline = request.POST.get("startline")
     endline = request.POST.get("endline")
     tid = request.POST.get("parent")
-    if Todo.objects.filter(id=tid).count() == 0:
-        return Todo.objects.get(id=tid)
-    parent = Todo.objects.get(id=tid)
+    parent = Todo.objects.filter(id=tid).first()
 
     Todo.objects.create(
         project=project,
@@ -124,18 +116,14 @@ def new_task(request: WSGIRequest):
         return HttpResponseNotAllowed("POST")
 
     pid = request.POST.get("project")
-    if pid and Project.objects.filter(id=pid).count() == 0:
-        return HttpResponseNotFound("目标项目不存在!")
-    project = Project.objects.get(id=pid)
+    project = Project.objects.filter(id=pid).first()
     # else:
     #     project = Project.objects.get(id=pid)
     #     if project.is_checked:
     #         return HttpResponseNotModified("目标项目已经结项!")
 
     username = request.POST.get("user")
-    if User.objects.filter(username=username).count() == 0:
-        return HttpResponseNotFound("目标用户不存在!")
-    user = User.objects.get(username=username)
+    user = User.objects.filter(username=username).first()
 
     name = request.POST.get("name")
 
