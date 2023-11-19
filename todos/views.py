@@ -102,10 +102,10 @@ def new_todo(request: WSGIRequest):
         try:
             match = re.match(r"^(?:(\d+) )?(\d+):(\d+):(\d+)$", endline)
             endline = datetime.timedelta(
-                days=match.group(1),
-                hours=match.group(2),
-                minutes=match.group(3),
-                seconds=match.group(4),
+                days=int(match.group(1)),
+                hours=int(match.group(2)),
+                minutes=int(match.group(3)),
+                seconds=int(match.group(4)),
             )
         except:
             return JsonResponse({"status": False, "message": "错误的时间戳！"})
@@ -161,10 +161,10 @@ def new_task(request: WSGIRequest):
         try:
             match = re.match(r"^(?:(\d+) )?(\d+):(\d+):(\d+)$", duration)
             duration = datetime.timedelta(
-                days=match.group(1),
-                hours=match.group(2),
-                minutes=match.group(3),
-                seconds=match.group(4),
+                days=int(match.group(1)),
+                hours=int(match.group(2)),
+                minutes=int(match.group(3)),
+                seconds=int(match.group(4)),
             )
         except:
             return JsonResponse({"status": False, "message": "错误的时间戳！"})
