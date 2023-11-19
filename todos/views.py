@@ -11,6 +11,13 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .models import Permission, Project, User, Todo, Task
 
+import datetime
+import re
+
+
+def format_duration(duration):
+    ...
+
 
 @csrf_exempt
 def login(request: WSGIRequest):
@@ -91,6 +98,17 @@ def new_todo(request: WSGIRequest):
     desc = request.POST.get("desc")
     startline = request.POST.get("startline")
     endline = request.POST.get("endline")
+    if endline:
+        try:
+            match = re.match(r"^(?:(\d+) )?(\d+):(\d+):(\d+)$", endline)
+            endline = datetime.timedelta(
+                days=match.group(1),
+                hours=match.group(2),
+                minutes=match.group(3),
+                seconds=match.group(4),
+            )
+        except:
+            return JsonResponse({"status": False, "message": "错误的时间戳！"})
     tid = request.POST.get("parent")
     parent = Todo.objects.filter(id=tid).first()
 
@@ -139,6 +157,18 @@ def new_task(request: WSGIRequest):
     desc = request.POST.get("desc")
     start_time = request.POST.get("start_time")
     duration = request.POST.get("duration")
+    if duration:
+        try:
+            match = re.match(r"^(?:(\d+) )?(\d+):(\d+):(\d+)$", duration)
+            duration = datetime.timedelta(
+                days=match.group(1),
+                hours=match.group(2),
+                minutes=match.group(3),
+                seconds=match.group(4),
+            )
+        except:
+            return JsonResponse({"status": False, "message": "错误的时间戳！"})
+
     tid = request.POST.get("parent")
     parent = Task.objects.filter(id=tid).first()
 
