@@ -152,7 +152,7 @@ def new_task(request: WSGIRequest):
         desc=desc,
         start_time=start_time,
         duration=duration,
-        parent=parent,
+        tid=parent,
         is_checked=False,
     )
     return HttpResponse("新任务创建成功!")
