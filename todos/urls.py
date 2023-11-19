@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import new_task, new_project, new_todo, take_project, take_task
+from .views import login, new_task, new_project, new_todo, take_project, take_task
 
 urlpatterns = [
+    path("login/", login),
     path("project/new/", new_project),
     path("task/new/", new_task),
     path("todo/new/", new_todo),

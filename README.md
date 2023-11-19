@@ -5,6 +5,7 @@
 
 # Quantumix
 
+</div>
 启动Quantumix：
 
 ```sh

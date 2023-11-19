@@ -3,10 +3,25 @@ from django.http import (
     HttpResponseNotAllowed,
     HttpResponseNotFound,
     HttpResponseForbidden,
+    JsonResponse,
     # HttpResponseNotModified,
 )
 from django.core.handlers.wsgi import WSGIRequest
 from .models import Permission, Project, User, Todo, Task
+
+
+def login(request: WSGIRequest):
+    username = request.POST.get("username")
+    password = request.POST.get("password")
+    search = User.objects.filter(username=username)
+    if not search.count():
+        return JsonResponse({"status": False, "message": "用户不存在!"})
+
+    if search.first().password == password:
+        request.session["username"] == username
+        return JsonResponse({"status": True, "message": "登录成功！"})
+    else:
+        return JsonResponse({"status": True, "message": "密码错误！"})
 
 
 def new_project(request: WSGIRequest):
@@ -162,8 +177,11 @@ def take_project(request: WSGIRequest):
     if project.user:
         return HttpResponseForbidden("目标项目已经被承接了.")
 
-    Project.objects.filter(id=pid).update(user=User.objects.get(username=request.session.get("username")))
+    Project.objects.filter(id=pid).update(
+        user=User.objects.get(username=request.session.get("username"))
+    )
     return HttpResponse("项目承接成功!")
+
 
 def take_task(request: WSGIRequest):
     if request.method == "GET":
@@ -176,9 +194,7 @@ def take_task(request: WSGIRequest):
     if task.user:
         return HttpResponseForbidden("目标项目已经被承接了.")
 
-    Task.objects.filter(id=pid).update(user=User.objects.get(username=request.session.get("username")))
+    Task.objects.filter(id=pid).update(
+        user=User.objects.get(username=request.session.get("username"))
+    )
     return HttpResponse("任务承接成功!")
-
-
-
-    
