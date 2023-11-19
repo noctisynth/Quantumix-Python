@@ -8,6 +8,7 @@ from django.http import (
 )
 from django.core.handlers.wsgi import WSGIRequest
 from django.views.decorators.csrf import csrf_exempt
+from django.forms.models import model_to_dict
 
 from .models import Permission, Project, User, Todo, Task
 
@@ -222,3 +223,42 @@ def take_task(request: WSGIRequest):
         user=User.objects.get(username=request.session.get("username"))
     )
     return HttpResponse("任务承接成功!")
+
+
+@csrf_exempt
+def get_project(request: WSGIRequest):
+    if request.method == "GET":
+        return HttpResponseNotAllowed("POST")
+    pid = request.POST.get("id")
+    project = Project.objects.filter(id=pid).first()
+    return (
+        JsonResponse(model_to_dict(project))
+        if project
+        else JsonResponse({"status": False, "message": "目标项目不存在!"}, status_code=404)
+    )
+
+
+@csrf_exempt
+def get_task(request: WSGIRequest):
+    if request.method == "GET":
+        return HttpResponseNotAllowed("POST")
+    pid = request.POST.get("id")
+    task = Task.objects.filter(id=pid).first()
+    return (
+        JsonResponse(model_to_dict(task))
+        if task
+        else JsonResponse({"status": False, "message": "目标项目不存在!"}, status_code=404)
+    )
+
+
+@csrf_exempt
+def get_todo(request: WSGIRequest):
+    if request.method == "GET":
+        return HttpResponseNotAllowed("POST")
+    pid = request.POST.get("id")
+    todo = Todo.objects.filter(id=pid).first()
+    return (
+        JsonResponse(model_to_dict(todo))
+        if todo
+        else JsonResponse({"status": False, "message": "目标项目不存在!"}, status_code=404)
+    )
