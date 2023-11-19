@@ -7,9 +7,12 @@ from django.http import (
     # HttpResponseNotModified,
 )
 from django.core.handlers.wsgi import WSGIRequest
+from django.views.decorators.csrf import csrf_exempt
+
 from .models import Permission, Project, User, Todo, Task
 
 
+@csrf_exempt
 def login(request: WSGIRequest):
     username = request.POST.get("username")
     password = request.POST.get("password")
@@ -24,6 +27,7 @@ def login(request: WSGIRequest):
         return JsonResponse({"status": True, "message": "密码错误！"})
 
 
+@csrf_exempt
 def new_project(request: WSGIRequest):
     if request.method == "GET":
         return HttpResponseNotAllowed("POST")
@@ -48,7 +52,7 @@ def new_project(request: WSGIRequest):
     end_time = request.POST.get("end_time")
 
     Project.objects.create(
-        user=user,
+        uid=user,
         name=name,
         permission=permission,
         priority=priority,
@@ -60,6 +64,7 @@ def new_project(request: WSGIRequest):
     return HttpResponse("新项目创建成功!")
 
 
+@csrf_exempt
 def new_todo(request: WSGIRequest):
     if request.method == "GET":
         return HttpResponseNotAllowed("POST")
@@ -113,6 +118,7 @@ def new_todo(request: WSGIRequest):
     return HttpResponse("新任务创建成功!")
 
 
+@csrf_exempt
 def new_task(request: WSGIRequest):
     if request.method == "GET":
         return HttpResponseNotAllowed("POST")
@@ -166,6 +172,7 @@ def new_task(request: WSGIRequest):
     return HttpResponse("新任务创建成功!")
 
 
+@csrf_exempt
 def take_project(request: WSGIRequest):
     if request.method == "GET":
         return HttpResponseNotAllowed("POST")
@@ -183,6 +190,7 @@ def take_project(request: WSGIRequest):
     return HttpResponse("项目承接成功!")
 
 
+@csrf_exempt
 def take_task(request: WSGIRequest):
     if request.method == "GET":
         return HttpResponseNotAllowed("POST")
