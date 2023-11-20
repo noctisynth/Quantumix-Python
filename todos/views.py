@@ -25,7 +25,7 @@ def login(request: WSGIRequest):
         return JsonResponse({"status": False, "message": "用户不存在!"})
 
     if search.first().password == password:
-        request.session["username"] == username
+        request.session["username"] = username
         return JsonResponse({"status": True, "message": "登录成功！"})
     else:
         return JsonResponse({"status": True, "message": "密码错误！"})
@@ -210,7 +210,7 @@ def take_task(request: WSGIRequest):
         return HttpResponseForbidden("目标项目已经被承接了.")
 
     Task.objects.filter(id=pid).update(
-        user=User.objects.get(username=request.session.get("username"))
+        uid=User.objects.get(username=request.session.get("username"))
     )
     return HttpResponse("任务承接成功!")
 
