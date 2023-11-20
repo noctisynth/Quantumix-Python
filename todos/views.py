@@ -4,8 +4,8 @@ from django.http import (
     HttpResponseNotFound,
     HttpResponseForbidden,
     JsonResponse,
-    # HttpResponseNotModified,
 )
+from django.contrib.auth.hashers import make_password, check_password
 from django.core.handlers.wsgi import WSGIRequest
 from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
@@ -14,10 +14,6 @@ from .models import Permission, Project, User, Todo, Task
 
 import datetime
 import re
-
-
-def format_duration(duration):
-    ...
 
 
 @csrf_exempt
@@ -33,6 +29,12 @@ def login(request: WSGIRequest):
         return JsonResponse({"status": True, "message": "登录成功！"})
     else:
         return JsonResponse({"status": True, "message": "密码错误！"})
+
+
+@csrf_exempt
+def regist(request: WSGIRequest):
+    username = request.POST.get("username")
+    password = request.POST.get("password")
 
 
 @csrf_exempt
@@ -183,16 +185,15 @@ def take_project(request: WSGIRequest):
     if request.method == "GET":
         return HttpResponseNotAllowed("POST")
 
-    pid = request.POST.get("id")
-    if pid and Project.objects.filter(id=pid).count() == 0:
+    projects = Project.objects.filter(id=request.POST.get("id"))
+    project = projects.first()
+    if not project:
         return HttpResponseNotFound("目标项目不存在!")
-    project = Project.objects.get(id=pid)
-    if project.user:
-        return HttpResponseForbidden("目标项目已经被承接了.")
 
-    Project.objects.filter(id=pid).update(
-        user=User.objects.get(username=request.session.get("username"))
-    )
+    # if project.user:
+    #     return HttpResponseForbidden("目标项目已经被承接了.")
+
+    projects.update(uid=User.objects.get(username=request.session.get("username")))
     return HttpResponse("项目承接成功!")
 
 
@@ -214,10 +215,7 @@ def take_task(request: WSGIRequest):
     return HttpResponse("任务承接成功!")
 
 
-@csrf_exempt
 def get_project(request: WSGIRequest):
-    if request.method == "GET":
-        return HttpResponseNotAllowed("POST")
     pid = request.POST.get("id")
     project = Project.objects.filter(id=pid).first()
     return (
@@ -227,10 +225,7 @@ def get_project(request: WSGIRequest):
     )
 
 
-@csrf_exempt
 def get_task(request: WSGIRequest):
-    if request.method == "GET":
-        return HttpResponseNotAllowed("POST")
     pid = request.POST.get("id")
     task = Task.objects.filter(id=pid).first()
     return (
@@ -240,10 +235,7 @@ def get_task(request: WSGIRequest):
     )
 
 
-@csrf_exempt
 def get_todo(request: WSGIRequest):
-    if request.method == "GET":
-        return HttpResponseNotAllowed("POST")
     pid = request.POST.get("id")
     todo = Todo.objects.filter(id=pid).first()
     return (
@@ -251,3 +243,45 @@ def get_todo(request: WSGIRequest):
         if todo
         else JsonResponse({"status": False, "message": "目标项目不存在!"}, status_code=404)
     )
+
+
+@csrf_exempt
+def finish_project(request: WSGIRequest):
+    if request.method == "GET":
+        return HttpResponseNotAllowed("POST")
+
+    projects = Project.objects.filter(id=request.POST.get("id"))
+    project = projects.first()
+    if not project:
+        return HttpResponseNotFound("目标项目不存在!")
+
+    projects.update(is_checked=True)
+    return JsonResponse({"status": True, "message": "项目结项成功！"})
+
+
+@csrf_exempt
+def finish_task(request: WSGIRequest):
+    if request.method == "GET":
+        return HttpResponseNotAllowed("POST")
+
+    tasks = Task.objects.filter(id=request.POST.get("id"))
+    task = tasks.first()
+    if not task:
+        return HttpResponseNotFound("目标任务序列不存在!")
+
+    tasks.update(is_checked=True)
+    return JsonResponse({"status": True, "message": "任务标记完成成功！"})
+
+
+@csrf_exempt
+def finish_todo(request: WSGIRequest):
+    if request.method == "GET":
+        return HttpResponseNotAllowed("POST")
+
+    todos = Todo.objects.filter(id=request.POST.get("id"))
+    todo = todos.first()
+    if not todo:
+        return HttpResponseNotFound("目标ToDo序列不存在!")
+
+    todos.update(is_checked=True)
+    return JsonResponse({"status": True, "message": "任务标记完成成功！"})
