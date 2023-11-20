@@ -215,23 +215,25 @@ def take_task(request: WSGIRequest):
     return HttpResponse("任务承接成功!")
 
 
+@csrf_exempt
 def get_project(request: WSGIRequest):
     pid = request.POST.get("id")
     project = Project.objects.filter(id=pid).first()
     return (
         JsonResponse(model_to_dict(project))
         if project
-        else JsonResponse({"status": False, "message": "目标项目不存在!"}, status_code=404)
+        else JsonResponse({"status": False, "message": "目标项目不存在!"})
     )
 
 
+@csrf_exempt
 def get_task(request: WSGIRequest):
     pid = request.POST.get("id")
     task = Task.objects.filter(id=pid).first()
     return (
         JsonResponse(model_to_dict(task))
         if task
-        else JsonResponse({"status": False, "message": "目标项目不存在!"}, status_code=404)
+        else JsonResponse({"status": False, "message": "目标项目不存在!"})
     )
 
 
