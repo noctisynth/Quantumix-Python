@@ -18,7 +18,7 @@ urlpatterns = [
     path("todo/new/", new_todo),
     path("project/take/", take_project),
     path("task/new/", take_task),
-    path("/project/get/", get_project),
-    path("/task/get/", get_task),
-    path("/todo/get/", get_todo),
+    path("project/get/", get_project),
+    path("task/get/", get_task),
+    path("todo/get/", get_todo),
 ]
