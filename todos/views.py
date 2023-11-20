@@ -99,17 +99,6 @@ def new_todo(request: WSGIRequest):
     desc = request.POST.get("desc")
     startline = request.POST.get("startline")
     endline = request.POST.get("endline")
-    if endline:
-        try:
-            match = re.match(r"^(?:(\d+) )?(\d+):(\d+):(\d+)$", endline)
-            endline = datetime.timedelta(
-                days=int(match.group(1)),
-                hours=int(match.group(2)),
-                minutes=int(match.group(3)),
-                seconds=int(match.group(4)),
-            )
-        except:
-            return JsonResponse({"status": False, "message": "错误的时间戳！"})
     tid = request.POST.get("parent")
     parent = Todo.objects.filter(id=tid).first()
 
