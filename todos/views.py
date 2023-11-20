@@ -237,6 +237,7 @@ def get_task(request: WSGIRequest):
     )
 
 
+@csrf_exempt
 def get_todo(request: WSGIRequest):
     pid = request.POST.get("id")
     todo = Todo.objects.filter(id=pid).first()
